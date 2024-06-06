@@ -6,6 +6,7 @@ use std::{
 /// An abstraction for the concept of a Vertex Attribute Array
 /// Usage of this struct outside of the library is currently unsafe, since
 /// the memory safety of the GPU buffer associated depends on the user supplying correct values.
+#[derive(Debug, Default, Clone)]
 pub struct VertexAttributeSpec {
     pub(crate) layouts: Vec<(i32, u32, u8, i32, usize)>,
 }
@@ -70,6 +71,15 @@ pub enum ProgramState {
 pub struct Program {
     id: u32,
     linked: ProgramState,
+}
+
+impl Default for Program {
+    fn default() -> Self {
+        Self {
+            id: unsafe { gl::CreateProgram() },
+            linked: ProgramState::Unlinked,
+        }
+    }
 }
 
 impl Program {
@@ -148,7 +158,7 @@ impl Program {
             .as_bytes()
             .bytes()
             .map(|b| b.unwrap() as i8)
-            .chain(vec![0 as i8])
+            .chain(vec![0])
             .collect::<Vec<_>>();
         unsafe { gl::GetUniformLocation(self.id, name_bytes.as_ptr_range().start.cast()) }
     }

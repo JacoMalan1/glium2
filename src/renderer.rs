@@ -14,6 +14,10 @@ pub enum DrawMode {
     Triangles,
     TriangleStrip,
     TriangleFan,
+    Points,
+    Lines,
+    LineStrip,
+    LineLoop,
 }
 
 impl From<DrawMode> for u32 {
@@ -22,6 +26,10 @@ impl From<DrawMode> for u32 {
             DrawMode::Triangles => gl::TRIANGLES,
             DrawMode::TriangleStrip => gl::TRIANGLE_STRIP,
             DrawMode::TriangleFan => gl::TRIANGLE_FAN,
+            DrawMode::Points => gl::POINTS,
+            DrawMode::Lines => gl::LINES,
+            DrawMode::LineStrip => gl::LINE_STRIP,
+            DrawMode::LineLoop => gl::LINE_LOOP,
         }
     }
 }
@@ -32,9 +40,19 @@ pub enum CullingMode {
     None,
 }
 
+/// A struct for abstracting OpenGL draw calls
 pub struct Renderer {
     clear_color: Vec4,
     clear_depth: f64,
+}
+
+impl Default for Renderer {
+    fn default() -> Self {
+        Self {
+            clear_color: glm::vec4(0.0, 0.0, 0.0, 1.0),
+            clear_depth: 0.0,
+        }
+    }
 }
 
 impl Renderer {

@@ -1,0 +1,11 @@
+[package]
+name = "glfw-examples"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "hello-triangle"
+path = "src/hello_triangle.rs"
+
+[dependencies]
+glium2 = { path = ".." }

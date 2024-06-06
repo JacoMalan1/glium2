@@ -99,7 +99,7 @@ where
     V: Into<VertexData>,
 {
     /// Creates a new vertex buffer from some vertices and, optionally, indices.
-    pub fn new(vertices: &Vec<V>, indices: Option<&Vec<gl::types::GLuint>>) -> Self
+    pub fn new(vertices: &[V], indices: Option<&[gl::types::GLuint]>) -> Self
     where
         V: Clone + std::fmt::Debug,
     {
@@ -123,13 +123,13 @@ where
                 gl::DYNAMIC_DRAW,
             );
 
-            if let Some(ref indices) = indices {
+            if let Some(indices) = indices {
                 gl::GenBuffers(1, std::ptr::addr_of_mut!(ibo));
                 gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ibo);
 
                 gl::BufferData(
                     gl::ELEMENT_ARRAY_BUFFER,
-                    (indices.len() * std::mem::size_of::<GLuint>()) as isize,
+                    std::mem::size_of_val(indices) as isize,
                     indices.as_ptr_range().start.cast(),
                     gl::DYNAMIC_DRAW,
                 )
@@ -178,7 +178,7 @@ where
 
     /// Updates the contents of a vertex buffer.
     /// This function will call [`VertexBuffer::replace`] when appropriate.
-    pub fn update_buffer(&mut self, vertices: &Vec<V>, indices: Option<&Vec<GLuint>>)
+    pub fn update_buffer(&mut self, vertices: &[V], indices: Option<&[GLuint]>)
     where
         V: Clone,
     {
@@ -209,7 +209,7 @@ where
                 unsafe {
                     gl::BufferData(
                         gl::ELEMENT_ARRAY_BUFFER,
-                        (indices.len() * std::mem::size_of::<GLuint>()) as isize,
+                        std::mem::size_of_val(indices) as isize,
                         indices.as_ptr_range().start.cast(),
                         gl::DYNAMIC_DRAW,
                     );
@@ -250,7 +250,7 @@ where
     /// # Panics
     /// This function panics if the supplied indices are None, but the buffer previously
     /// contained indices and vice-versa.
-    pub unsafe fn replace(&mut self, vertices: &Vec<V>, indices: Option<&Vec<GLuint>>)
+    pub unsafe fn replace(&mut self, vertices: &[V], indices: Option<&[GLuint]>)
     where
         V: Clone,
     {
@@ -265,7 +265,7 @@ where
             gl::BufferSubData(
                 gl::ELEMENT_ARRAY_BUFFER,
                 0,
-                (indices.len() * std::mem::size_of::<GLuint>()) as isize,
+                std::mem::size_of_val(indices) as isize,
                 indices.as_ptr_range().start.cast(),
             )
         }
